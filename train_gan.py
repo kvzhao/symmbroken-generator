@@ -9,6 +9,7 @@ import tensorflow as tf
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
 matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 import tflib as lib
 import tflib.ops.linear
@@ -153,10 +154,3 @@ with tf.Session() as sess:
                 samples.extend(sess.run(fake_data))
             name = 'step_' + str(step)
             save_image(name, samples)
-
-            # convert samples to binary
-            samples[samples > 0] = 1
-            samples[samples < 0] = -1
-            name = 'step_' + str(step) + '_bin'
-            save_image(name, samples)
-        
