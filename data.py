@@ -1,3 +1,4 @@
+from __future__ import division
 import numpy as np
 
 def cal_mag(spins):
@@ -24,3 +25,27 @@ def brokenstate(L, dev=0.02):
     spins[sites] *= -1
 
     return spins, label
+
+def get_neighbor(site, L=32):
+    pbc = lambda s, d, l: ((s+d)%l + l) % l
+    x, y = int(site%L), int(site/L)
+    neighbors = []
+    xp = pbc(x, +1, L)
+    xm = pbc(x, -1, L)
+    yp = pbc(y, +1, L)
+    ym = pbc(y, -1, L)
+    neighbors.append(xp + y  * L)
+    neighbors.append(x  + ym * L)
+    neighbors.append(xm + y  * L)
+    neighbors.append(x  + yp * L)
+    return neighbors
+
+def cal_energy(state, L=32):
+    eng = 0.0
+    J = 1.0
+    for site, spin in enumerate(state):
+        neighbors = get_neighbor(site, L)
+        se = np.sum(state[neighbors], dtype=np.float32)
+        eng += J * spin * se
+    eng = eng / 1024.0
+    return eng
